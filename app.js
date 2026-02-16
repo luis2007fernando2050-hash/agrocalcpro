@@ -1,21 +1,22 @@
-import { auth, provider, db } from './firebase.js';
-import { calcularIrrigacao } from './utils/calculos.js';
+import { loginGoogle, logoutGoogle } from './firebase.js';
 
 const loginBtn = document.getElementById('loginBtn');
 const logoutBtn = document.getElementById('logoutBtn');
 const authArea = document.getElementById('authArea');
 const appArea = document.getElementById('appArea');
-const calcularBtn = document.getElementById('calcularBtn');
-const resultadoCard = document.getElementById('resultadoCard');
-const resultado = document.getElementById('resultado');
+const userName = document.getElementById('userName');
 
-loginBtn.addEventListener('click', async () => { alert('Login simulado'); });
-logoutBtn.addEventListener('click', () => { alert('Logout simulado'); });
+loginBtn.addEventListener('click', async () => {
+  const user = await loginGoogle();
+  if(user){
+    authArea.classList.add('hidden');
+    appArea.classList.remove('hidden');
+    userName.textContent = `Olá, ${user.displayName}`;
+  }
+});
 
-calcularBtn.addEventListener('click', () => {
-  const form = document.getElementById('formIrrigacao');
-  const dados = Object.fromEntries(new FormData(form).entries());
-  const projeto = calcularIrrigacao(dados);
-  resultado.textContent = JSON.stringify(projeto, null, 2);
-  resultadoCard.classList.remove('hidden');
+logoutBtn.addEventListener('click', async () => {
+  await logoutGoogle();
+  authArea.classList.remove('hidden');
+  appArea.classList.add('hidden');
 });
