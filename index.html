@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgroCalc Pro</title>
+<link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#145a32">
+</head>
+<body>
+
+<header>
+  <h1>AgroCalc Pro 🌾</h1>
+</header>
+
+<div class="container">
+
+  <div id="authArea">
+    <button id="loginBtn">Entrar com Google</button>
+  </div>
+
+  <div id="appArea" class="hidden">
+    <p id="userName"></p>
+    <button id="logoutBtn">Sair</button>
+
+    <h2>Novo Projeto de Irrigação</h2>
+    <form id="formIrrigacao">
+      <input type="text" name="nomeProdutor" placeholder="Nome do Produtor" required>
+      <input type="text" name="localizacao" placeholder="Localização da Propriedade" required>
+      <input type="number" name="areaTotal" placeholder="Área Total (ha)" required>
+      <select name="cultura" required>
+        <optgroup label="Hortaliças">
+          <option value="Alface">Alface</option>
+          <option value="Tomate">Tomate</option>
+          <option value="Cenoura">Cenoura</option>
+          <option value="Cebola">Cebola</option>
+          <option value="Batata">Batata</option>
+          <option value="Pepino">Pepino</option>
+          <option value="Pimentão">Pimentão</option>
+          <option value="Couve">Couve</option>
+          <option value="Beterraba">Beterraba</option>
+          <option value="Rúcula">Rúcula</option>
+        </optgroup>
+        <optgroup label="Frutíferas">
+          <option value="Laranja">Laranja</option>
+          <option value="Limão">Limão</option>
+          <option value="Manga">Manga</option>
+          <option value="Goiaba">Goiaba</option>
+          <option value="Mamão">Mamão</option>
+          <option value="Banana">Banana</option>
+          <option value="Morango">Morango</option>
+          <option value="Melancia">Melancia</option>
+          <option value="Melão">Melão</option>
+          <option value="Abacaxi">Abacaxi</option>
+        </optgroup>
+        <optgroup label="Grãos e Cereais">
+          <option value="Milho">Milho</option>
+          <option value="Soja">Soja</option>
+          <option value="Arroz">Arroz</option>
+          <option value="Trigo">Trigo</option>
+          <option value="Feijão">Feijão</option>
+        </optgroup>
+      </select>
+      <input type="text" name="tipoSistema" placeholder="Sistema de Irrigação" required>
+      <input type="number" name="desnivel" placeholder="Desnível (m)" required>
+      <input type="number" name="eficienciaSistema" placeholder="Eficiência (%)" required>
+      <input type="number" name="potenciaBomba" placeholder="Potência da bomba (W)" required>
+    </form>
+
+    <button id="calcularBtn">Calcular Projeto</button>
+
+    <div id="resultadoCard" class="hidden">
+      <h3>Projeto Técnico</h3>
+      <pre id="resultado"></pre>
+      <button id="salvarBtn">Salvar Projeto</button>
+      <button id="exportarPDF">Exportar PDF</button>
+    </div>
+
+    <h2>Histórico de Projetos</h2>
+    <div id="historico"></div>
+  </div>
+</div>
+
+<script type="module" src="firebase.js"></script>
+<script type="module" src="app.js"></script>
+<script>
+if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('service-worker.js');
+}
+</script>
+</body>
+</html>
