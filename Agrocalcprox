@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgroCalc Pro Beta</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+  <header>
+    <h1>AgroCalc Pro Beta</h1>
+    <p>Projeto de Irrigação - Fase Beta</p>
+  </header>
+
+  <main>
+    <section id="form-section">
+      <h2>Formulário de Projeto</h2>
+      <form id="formProjeto">
+        <fieldset>
+          <legend>Identificação do Técnico/Produtor</legend>
+          <label>Nome do Técnico: <input type="text" id="nomeTecnico" required></label>
+          <label>Nome do Produtor: <input type="text" id="nomeProdutor" required></label>
+        </fieldset>
+
+        <fieldset>
+          <legend>Localização e Solo</legend>
+          <label>Endereço / Município: <input type="text" id="localizacao" required></label>
+          <label>Tipo de Solo: <input type="text" id="tipoSolo" required></label>
+          <label>Classificação do Solo: <input type="text" id="classificacaoSolo"></label>
+          <label>PH do Solo: <input type="number" step="0.1" id="phSolo"></label>
+          <label>Nutrientes Principais: <input type="text" id="nutrientesSolo"></label>
+        </fieldset>
+
+        <fieldset>
+          <legend>Cultura e Área</legend>
+          <label>Tipo de Cultura: 
+            <select id="cultura" required>
+              <option value="">Selecione</option>
+              <option value="tomate">Tomate</option>
+              <option value="alface">Alface</option>
+              <option value="cenoura">Cenoura</option>
+              <option value="manga">Manga</option>
+              <option value="laranja">Laranja</option>
+              <option value="morango">Morango</option>
+              <!-- Adicione mais culturas conforme necessário -->
+            </select>
+          </label>
+          <label>Estágio Fenológico: <input type="text" id="estagio"></label>
+          <label>Área Total (m²): <input type="number" id="areaTotal" required></label>
+          <label>Espaçamento entre Plantas (m): <input type="text" id="espacamentoPlantas"></label>
+          <label>Espaçamento entre Fileiras (m): <input type="text" id="espacamentoFileiras"></label>
+          <label>Número Total de Plantas: <input type="number" id="totalPlantas"></label>
+        </fieldset>
+
+        <fieldset>
+          <legend>Água e Irrigação</legend>
+          <label>Fonte de Água: <input type="text" id="fonteAgua"></label>
+          <label>Qualidade da Água: <input type="text" id="qualidadeAgua"></label>
+          <label>Vazão Disponível (L/h): <input type="number" id="vazao"></label>
+          <label>Distância da Fonte até a Área (m): <input type="number" id="distanciaFonte"></label>
+          <label>Desnível / Altura Manométrica (m): <input type="number" id="desnivel"></label>
+          <label>Sistema de Irrigação Desejado: 
+            <select id="sistemaIrrigacao">
+              <option value="gotejamento">Gotejamento</option>
+              <option value="aspersao">Aspersão</option>
+              <option value="microaspersao">Microaspersão</option>
+            </select>
+          </label>
+          <label>Frequência de Irrigação Desejada (dias): <input type="number" id="frequenciaIrrigacao"></label>
+        </fieldset>
+
+        <fieldset>
+          <legend>Energia e Orçamento</legend>
+          <label>Disponibilidade de Energia: 
+            <select id="energia">
+              <option value="eletrica">Elétrica</option>
+              <option value="solar">Solar</option>
+              <option value="manual">Manual</option>
+            </select>
+          </label>
+          <label>Potência Instalada (kW): <input type="number" id="potencia"></label>
+          <label>Orçamento Disponível (R$): <input type="number" id="orcamento"></label>
+          <label>Mão de Obra Disponível: <input type="text" id="maoObra"></label>
+        </fieldset>
+
+        <fieldset>
+          <legend>Histórico e Expansão</legend>
+          <label>Histórico de Produtividade: <input type="text" id="historicoProdutividade"></label>
+          <label>Histórico de Problemas Hídricos: <input type="text" id="historicoProblemas"></label>
+          <label>Necessidade de Automação: <input type="text" id="automacao"></label>
+          <label>Plano de Expansão da Área: <input type="text" id="planoExpansao"></label>
+        </fieldset>
+
+        <button type="submit">Gerar Projeto</button>
+      </form>
+    </section>
+
+    <section id="resultado">
+      <h2>Projeto Gerado</h2>
+      <pre id="saida"></pre>
+      <button id="gerarPDF">Salvar em PDF</button>
+    </section>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    const form = document.getElementById('formProjeto');
+    const saida = document.getElementById('saida');
+    const gerarPDFbtn = document.getElementById('gerarPDF');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const projeto = {};
+      new FormData(form).forEach((value, key) => projeto[key] = value);
+
+      // Exemplo de cálculo de irrigação simples
+      projeto['volumeNecessarioL'] = (projeto.areaTotal || 0) * 5; // 5L/m² como exemplo
+      projeto['materialEstimado'] = `${Math.ceil(projeto.areaTotal/10)} tubos de 10m`;
+
+      saida.textContent = JSON.stringify(projeto, null, 2);
+    });
+
+    gerarPDFbtn.addEventListener('click', () => {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      doc.text(saida.textContent, 10, 10);
+      doc.save('ProjetoIrrigacao.pdf');
+    });
+  </script>
+
+  <style>
+    body { font-family: Arial, sans-serif; margin:0; padding:0; }
+    header { background:#4CAF50; color:white; padding:1rem; text-align:center; }
+    main { padding:1rem; max-width:900px; margin:auto; }
+    fieldset { margin-bottom:1rem; padding:1rem; }
+    label { display:block; margin-bottom:0.5rem; }
+    input, select { width:100%; padding:0.5rem; margin-bottom:0.5rem; }
+    button { padding:0.7rem 1rem; background:#4CAF50; color:white; border:none; cursor:pointer; }
+    button:hover { background:#45a049; }
+    #resultado { margin-top:2rem; }
+    pre { background:#f4f4f4; padding:1rem; }
+  </style>
+
+  <script>
+    // Service Worker PWA simples
+    if('serviceWorker' in navigator){
+      navigator.serviceWorker.register('service-worker.js')
+      .then(() => console.log('Service Worker registrado'))
+      .catch(e => console.log('Erro SW:', e));
+    }
+  </script>
+</body>
+</html>
